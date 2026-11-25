@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101214">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Birdie's Fleet">
+  <meta name="description" content="Clock mobile mechanic jobs, capture receipts, record recommendations, and create invoices from your phone.">
+  <title>Birdie's Fleet Service</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="apple-touch-icon" href="./icon-192.png">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <button class="brand" id="homeButton" type="button" aria-label="Birdie's Fleet Service home">
+      <span class="brand-mark" aria-hidden="true"><span>G</span></span>
+      <span>
+        <strong>Birdie's</strong>
+        <small>Mechanic field desk</small>
+      </span>
+    </button>
+    <div class="topbar-meta">
+      <span class="signal-dot" id="syncDot" data-sync="disconnected" aria-hidden="true"></span>
+      <span id="storageLabel">Connecting cloud ledger</span>
+      <button class="button button-gold button-compact" id="saveAllButton" type="button">Save</button>
+      <a href="./portal.html" id="portalLink">Customer portal</a>
+    </div>
+  </header>
+
+  <main class="page">
+    <section id="boardView">
+      <div class="board-heading">
+        <div>
+          <p class="eyebrow">Mobile service operations</p>
+          <h1>Field work,<br><em>logged right.</em></h1>
+          <p>Clock the job. Capture the proof. Close it with a clean invoice.</p>
+        </div>
+        <div class="board-cta">
+          <button class="button button-voice hidden" id="shopAgentButton" type="button">
+            <span aria-hidden="true">💬</span> Ask Anya
+          </button>
+          <button class="button button-gold" id="newJobButton" type="button">
+            Add invoice
+          </button>
+        </div>
+      </div>
+
+      <div class="phone-note">
+        <span class="phone-note-icon" aria-hidden="true">⌁</span>
+        <div>
+          <strong>Permanent cloud ledger with offline recovery</strong>
+          <p>Jobs, clock-in/out history, pauses, notes, and receipt files sync behind this GitHub app. The phone keeps a recovery copy and automatically uploads changes when service returns.</p>
+        </div>
+      </div>
+
+      <div class="board-tools">
+        <div>
+          <p class="eyebrow">Active ledger</p>
+          <h2>Jobs saved with Birdie's Fleet Service</h2>
+        </div>
+        <div class="tool-actions">
+          <button class="text-button" id="syncButton" type="button">Sync now</button>
+          <button class="text-button" id="backupButton" type="button">Backup data</button>
+          <button class="text-button" id="restoreButton" type="button">Restore</button>
+          <input class="visually-hidden" id="restoreInput" type="file" accept="application/json">
+          <button class="text-button" id="signOutButton" type="button">Sign out</button>
+        </div>
+      </div>
+
+      <div class="board-modes" role="group" aria-label="How to list the ledger">
+        <button class="board-mode is-active" id="boardModeJobs" type="button" aria-pressed="true">By job</button>
+        <button class="board-mode" id="boardModeCustomers" type="button" aria-pressed="false">Every customer, every job</button>
+      </div>
+
+      <div class="job-grid" id="jobGrid"></div>
+      <div class="customer-grid hidden" id="customerGrid"></div>
+    </section>
+
+    <section class="hidden" id="jobView" aria-live="polite"></section>
+  </main>
+
+  <dialog class="sheet" id="jobDialog">
+    <form id="jobForm" novalidate>
+      <div class="sheet-header">
+        <div>
+          <p class="eyebrow">Open a work order</p>
+          <h2>Add invoice</h2>
+        </div>
+        <div class="sheet-header-actions">
+          <span class="save-pill" id="jobDraftState" data-state="idle">Auto-saving</span>
+          <button class="button button-gold button-compact" id="saveJobButton" type="submit">Save</button>
+          <button class="icon-button" id="closeJobDialog" type="button" aria-label="Close">×</button>
+        </div>
+      </div>
+
+      <div class="talk-row hidden" id="talkRow">
+        <button class="button button-talk" id="talkItInButton" type="button">
+          <span aria-hidden="true">🎙</span> Ask Anya to create invoice
+        </button>
+        <p>Say the customer, the car and the work — all in one go if you want. She fills the sheet in as you talk, and starts the clock if you tell her to.</p>
+      </div>
+
+      <div class="form-section car-picker hidden" id="carPicker">
+        <div class="section-heading">
+          <div>
+            <h3>Cars you've had in</h3>
+            <p>Tap one to fill the customer and vehicle straight from the ledger.</p>
+          </div>
+        </div>
+        <div class="car-chips" id="carChips"></div>
+      </div>
+
+      <div class="form-section">
+        <h3>Customer</h3>
+        <div class="form-grid">
+          <label class="field field-wide">
+            <span>Customer name</span>
+            <input name="customerName" autocomplete="name" required>
+          </label>
+          <label class="field field-wide">
+            <span>Customer phone</span>
+            <input name="customerPhone" type="tel" autocomplete="tel" inputmode="tel" placeholder="406 555 0147">
+          </label>
+          <label class="field field-wide">
+            <span>Customer email</span>
+            <input name="customerEmail" type="email" autocomplete="email" inputmode="email">
+          </label>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>Vehicle</h3>
+        <div class="form-grid vehicle-grid">
+          <label class="field">
+            <span>Year</span>
+            <input name="vehicleYear" inputmode="numeric" maxlength="4" placeholder="2018">
+          </label>
+          <label class="field">
+            <span>Make</span>
+            <input name="vehicleMake" required placeholder="Ford">
+          </label>
+          <label class="field">
+            <span>Model</span>
+            <input name="vehicleModel" required placeholder="F-150">
+          </label>
+          <label class="field">
+            <span>Plate</span>
+            <input name="vehiclePlate" autocapitalize="characters">
+          </label>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>Agreed work</h3>
+        <div class="form-grid">
+          <label class="field field-wide">
+            <span>Work description</span>
+            <textarea name="agreedWork" rows="4" required placeholder="Diagnose no-start condition and replace the agreed failed component."></textarea>
+          </label>
+          <label class="field">
+            <span>Labor rate / hour</span>
+            <span class="money-input"><b>$</b><input name="laborRate" inputmode="decimal" required placeholder="125.00"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="section-heading">
+          <div>
+            <h3>Approved materials</h3>
+            <p>List the parts and supplies needed for the job. Prices come from receipts later.</p>
+          </div>
+          <button class="text-button" id="addMaterialButton" type="button">+ Add material</button>
+        </div>
+        <div id="materialRows"></div>
+      </div>
+
+      <p class="form-error hidden" id="jobFormError"></p>
+      <p class="time-edit-note">This draft auto-saves as you type. Save (top right) or Create job writes it to the ledger for good.</p>
+      <div class="sheet-actions">
+        <button class="button button-quiet" id="cancelJobButton" type="button">Cancel</button>
+        <button class="button button-gold" type="submit">Create job</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="sheet receipt-sheet" id="receiptDialog">
+    <form id="receiptForm">
+      <div class="sheet-header">
+        <div>
+          <p class="eyebrow">Receipt folder</p>
+          <h2>Add receipts</h2>
+        </div>
+        <button class="icon-button" id="closeReceiptDialog" type="button" aria-label="Close">×</button>
+      </div>
+      <div class="receipt-capture-options">
+        <label class="camera-button">
+          <input id="receiptFile" name="receiptFile" type="file" accept="image/*" capture="environment">
+          <span class="camera-icon" aria-hidden="true">◎</span>
+          <strong>Take receipt photo</strong>
+          <small>One at a time with the camera</small>
+        </label>
+        <label class="camera-button library-button">
+          <input id="receiptLibrary" type="file" accept="image/*" multiple>
+          <span class="camera-icon" aria-hidden="true">▦</span>
+          <strong>Choose from library</strong>
+          <small>Select one or many receipts already on the phone</small>
+        </label>
+      </div>
+      <div class="receipt-preview hidden" id="receiptPreview"></div>
+      <p class="receipt-scan-status hidden" id="receiptScanStatus"></p>
+      <div class="receipt-suggest-row hidden" id="receiptSuggestRow"></div>
+      <div class="form-grid">
+        <label class="field">
+          <span>Vendor</span>
+          <input name="vendor" placeholder="Auto Zone" autocomplete="off">
+        </label>
+        <label class="field">
+          <span>Receipt parts</span>
+          <input name="receiptParts" placeholder="Receipt parts" autocomplete="off">
+        </label>
+        <label class="field">
+          <span>Receipt amount</span>
+          <span class="money-input"><b>$</b><input name="amount" inputmode="decimal" placeholder="0.00" autocomplete="off"></span>
+        </label>
+      </div>
+      <p class="form-error hidden" id="receiptFormError"></p>
+      <div class="sheet-actions">
+        <button class="button button-quiet" id="cancelReceiptButton" type="button">Cancel</button>
+        <button class="button button-dark" id="addReceiptDraftButton" type="submit">Add a Receipt</button>
+      </div>
+      <div class="filed-receipts" id="filedReceiptsPanel">
+        <p class="eyebrow">Ready to file</p>
+        <div class="receipt-list" id="draftReceiptsList"></div>
+        <p class="eyebrow filed-receipts-label">Already on this job</p>
+        <div class="receipt-list" id="filedReceiptsList"></div>
+        <div class="receipt-total" id="filedReceiptsTotal"></div>
+        <button class="button button-gold file-all-button" id="fileAllReceiptsButton" type="button" disabled>File All Receipts</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="sheet stripe-sheet" id="stripeDialog">
+    <div class="sheet-header">
+      <div>
+        <p class="eyebrow">Get paid by card</p>
+        <h2>Send a Stripe payment link?</h2>
+      </div>
+      <button class="icon-button" type="button" aria-label="Close" data-close-dialog>×</button>
+    </div>
+    <p>They pay <strong id="stripeDialogTotal"></strong> plus the card processing fee by credit card. The link is built for you — nothing to type into Stripe.</p>
+    <div class="sheet-actions">
+      <button class="button button-quiet" type="button" data-close-dialog>Not now</button>
+      <button class="button button-gold" id="stripeDialogSend" type="button">Send Stripe payment link</button>
+    </div>
+  </dialog>
+
+  <div class="toast hidden" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="./brand.js"></script>
+  <script src="./sync-auth.js"></script>
+  <script src="./voice-config.js"></script>
+  <script src="./voice.js"></script>
+  <script src="./assistant.js"></script>
+  <script src="./vendor/qrcode/qrcode.js"></script>
+  <script src="./shop-extras.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
