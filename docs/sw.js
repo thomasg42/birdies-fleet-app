@@ -1,8 +1,10 @@
-const CACHE = "birdies-fleet-service-v39-signin-fleet";
+const CACHE = "birdies-fleet-service-v40-visual-polish";
 const APP_SHELL = [
   "./",
   "./index.html",
   "./styles.css",
+  "./visual-polish.css",
+  "./ui-labels.js",
   "./brand.js",
   "./app.js",
   "./shop-extras.js",
@@ -13,6 +15,7 @@ const APP_SHELL = [
   "./assistant.js",
   "./portal.html",
   "./portal.js",
+  "./logo.png",
   "./icon-192.png",
   "./icon-512.png",
   "./manifest.webmanifest"

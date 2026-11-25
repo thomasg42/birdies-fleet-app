@@ -1,0 +1,80 @@
+/* Shared visual-only repair. No ledger, invoice or authentication changes. */
+/* Explicit foregrounds keep inactive bubbles and dark-card text readable. */
+.board-mode { color: var(--ink); background: var(--white); border-color: var(--line); }
+.board-mode.is-active { color: var(--ink); background: var(--gold); border-color: var(--gold-dark); }
+.customer-card { color: var(--paper); }
+.customer-card .customer-phones,
+.customer-card .customer-aliases,
+.customer-card .customer-job-time { color: #c5c9cc; }
+.customer-card .text-button { color: var(--gold-light); }
+.customer-card-head { flex-wrap: wrap; }
+.customer-card-head h3, .customer-job-car { overflow-wrap: anywhere; }
+.customer-job { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) auto; }
+.customer-cars span, .fleet-units span { max-width: 100%; overflow-wrap: anywhere; }
+#portalLink, #portalLink:visited { color: var(--gold-light); text-decoration: underline; text-underline-offset: 4px; min-height: 48px; display: inline-flex; align-items: center; }
+.button { white-space: normal; text-align: center; line-height: 1.4; padding-block: 10px; }
+.button:hover:not(:disabled) { transform: none; }
+button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px solid var(--gold-dark); outline-offset: 3px; }
+.topbar :focus-visible, .customer-card :focus-visible { outline-color: var(--gold-light); }
+@media (hover: hover) {
+  .board-mode:hover { border-color: var(--gold-dark); box-shadow: inset 0 0 0 1px var(--gold-dark); }
+  .customer-job:hover { background: #2b3034; }
+  #portalLink:hover { color: var(--white); }
+  .icon-button:hover, .portal-customer:hover { border-color: var(--gold-dark); }
+}
+/* All rows share the page gutter; long labels wrap without moving an edge. */
+.topbar { padding-inline: max(16px, calc((100% - 1180px) / 2)); gap: 16px; }
+.board-tools { flex-wrap: wrap; gap: 16px; }
+.board-tools > div:first-child { min-width: 0; flex: 1 1 360px; }
+.tool-actions { flex-wrap: wrap; gap: 8px 18px; }
+.tool-actions .text-button { min-height: 44px; }
+.board-cta { flex-wrap: wrap; }
+.content-card, .detail-column, .form-grid > *, .card-heading > div { min-width: 0; }
+.card-heading, .sheet-header { flex-wrap: wrap; gap: 12px; }
+.field input, .field select, .field textarea { min-width: 0; max-width: 100%; }
+select { font: inherit; color: var(--ink); background: var(--white); }
+.portal-line > span { min-width: 0; overflow-wrap: anywhere; }
+.portal-line > strong { flex-shrink: 0; }
+.inspect-pill.inspect-fair.is-on { color: #17120a; }
+.sign-in-overlay { overflow-y: auto; align-items: safe center; padding-block: max(20px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-bottom)); }
+.sign-in-card { margin-block: auto; }
+.sheet { max-height: calc(100dvh - 24px); }
+.brand-mark.has-logo { box-shadow: none; background: var(--white); }
+.brand-mark.has-logo img, .sign-in-mark img { object-fit: contain; }
+.inspect-photo img { object-fit: contain; background: var(--paper); }
+@media (max-width: 800px) {
+  .board-cta { width: 100%; }
+}
+@media (max-width: 560px) {
+  .topbar { flex-wrap: wrap; gap: 8px; padding-inline: 12px; }
+  .topbar .brand { width: 100%; }
+  .topbar-meta { max-width: none; width: 100%; flex: 1 1 100%; gap: 10px; font-size: 9px; }
+  .topbar-meta #storageLabel { max-width: none; min-width: 0; flex: 1; text-align: left; white-space: normal; overflow: visible; letter-spacing: .04em; }
+  .topbar-meta #portalLink { max-width: none; overflow: visible; white-space: normal; text-align: left; flex: 0 0 78px; font-size: 10px; }
+  .topbar-meta .button-compact { min-height: 48px; }
+  .brand strong, .brand small { white-space: normal; overflow: visible; }
+  .board-tools { flex-direction: column; align-items: stretch; }
+  .board-tools > div:first-child { flex: auto; }
+  .tool-actions { flex-direction: row; justify-content: space-between; align-items: center; }
+  .board-modes { display: grid; grid-template-columns: 1fr; }
+  .board-mode { width: 100%; }
+  .customer-card { padding: 18px; }
+  .customer-job { grid-template-columns: minmax(0, 1fr) auto; }
+  .customer-job-time { grid-column: 2; grid-row: 1; }
+  .customer-job-car { grid-column: 1 / -1; }
+  .sheet-header-actions { width: 100%; justify-content: flex-end; flex-wrap: wrap; }
+  .sheet-header-actions .save-pill { margin-right: auto; }
+  .icon-button { min-width: 44px; min-height: 44px; }
+  .sheet-actions { grid-template-columns: 1fr; }
+  .estimate-line { flex-wrap: wrap; }
+  .estimate-line-end { width: 100%; justify-items: stretch; text-align: left; }
+  .estimate-choice { display: flex; flex-wrap: wrap; }
+  .estimate-choice .button { flex: 1; }
+}
+@media (prefers-reduced-motion: reduce) { .button { transition: none; } }
+
+/* Opaque card fronts keep swipe-action words from bleeding through. */
+.job-card { background: var(--white); }
+.button-gold { background: linear-gradient(145deg, var(--gold-light), var(--gold)); border-color: var(--gold-dark); }
+
+.portal-body .board-heading { margin-bottom: 24px; }
